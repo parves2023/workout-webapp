@@ -1,0 +1,13 @@
+.images{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 380px 200px 120px;
+}
+.armsImg {
+    width: 210px;
+    height: 410px;
+    margin: auto;
+}
+/* .arms{
+    
+} */
