@@ -29,6 +29,46 @@
     .arms {
       visibility: hidden;
     }
+    /* .mainpage{
+      display: none;
+    } */
+    #exerciseName {
+    background: aliceblue;
+    border: 1px solid #84c5fe;
+    border-radius: 5px;
+    padding: 35px 50px;
+    font-size: 32px;
+    margin-bottom: -25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+    #progress-container {
+      width: 100%;
+      margin: 0px auto;
+      background-color: #eee;
+      border-radius: 5px;
+      height: 20px;
+      position: relative;
+    }
+
+    #progress-bar {
+      height: 100%;
+      width: 0;
+      background-color: #4CAF50;
+      border-radius: 5px;
+      transition: width 0.3s ease;
+    }
+
+    #progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #333;
+    }
   </style>
 </head>
 <body>
@@ -47,17 +87,32 @@
 <!-- Second section -->
 
 <div class="container arms grid justify-items-center" id="secondSection">
-  <img class="armsImg" src="images/1.gif" alt="#">
-  <h1 class="mt-7 text-4xl text-center text-green-500 font-semibold" id="exerciseName">ALTERNATING HOOKS</h1>
+  <img id="theimages" class="armsImg" src="images/1.gif" alt="#">
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+    <div id="progress-text">0/8</div>
+  </div>
+  <h1 class="mt-7 text-3xl text-center text-green-500 font-semibold" id="exerciseName">THE ALTERNATING HOOKS</h1>
   <h1 id="timer" class="mt-7 text-6xl text-yellow-600 font-bold">00:00</h1>
   <button id="pauseButton" class="bg-transparent text-4xl mt-7 hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded" onclick="togglePause()">PAUSE</button>
+  
+  <div class="buttonprenext space-x-12 mt-8">
+    <button id="thePreviousButton" class="border p-4 border-red-500 text-4xl hover:border-transparent hover:bg-blue-200 rounded text-red-700 font-bold">PREVIOUS</button>
+    <button id="theNextButton" class="border p-4 border-yellow-600 text-4xl hover:border-transparent hover:bg-blue-200 rounded text-yellow-600 font-bold">NEXT</button>
+  </div>
+  
 </div>
 
+<script src="pages.js"></script>
 <script>
+  let theimages = document.getElementById('theimages');
   let time = 30;
   let timerInterval;
   let isPaused = false;
-  let exerciseName = document.getElementById('exerciseName').innerHTML;
+  let exerciseName = document.getElementById('exerciseName');
+  let nextBtn = document.getElementById('theNextButton');
+  let progress = 0;
+  let pagecount = 0 ;
 
   function updateTimerDisplay() {
     const minutes = Math.floor(time / 60);
@@ -83,6 +138,8 @@
         clearInterval(timerInterval);
         const audio = new Audio('audio/bell audio.m4a'); // Replace 'audio1.mp3' with your audio file path
         audio.play();
+        nextBtn.onclick();
+        time = 30;
       }
     }, 1000);
   }
@@ -104,7 +161,7 @@
   function showSecondSection() {
   document.getElementById('firstSection').style.display = 'none';
   document.getElementById('secondSection').style.visibility = 'visible';
-  speak(`start. 30 second. ${exerciseName}`);
+  speak(`start. 30 second. ${pages[pagecount].name}. ${pages[pagecount].comment}`);
   startTimer();
 }
 
@@ -115,6 +172,80 @@
   };
 
 
+
+
+
+
+
+
+
+
+
+
+  nextBtn.onclick = ()=> {
+    if(pagecount < pages.length - 1){
+      pagecount++;
+      console.log(pagecount);
+      theimages.src = pages[pagecount].image;
+      exerciseName.innerHTML = pages[pagecount].name;
+      clearInterval(timerInterval);
+      time = 30;
+      startTimer();
+
+
+
+      speak(`THE NEXT. ${pages[pagecount].name} .......${pages[pagecount].comment}`);
+      const audio = new Audio('audio/bell audio.m4a');
+        audio.play();
+        increaseProgress();
+    }else{
+        pagecount = 0 ;
+        progress = 0;
+        increaseProgress();
+        theimages.src = imageSources[pagecount];
+        exerciseName.innerHTML = pages[pagecount].name;
+
+
+        speak(`THE NEXT. ${pages[pagecount].name}`);
+      const audio = new Audio('audio/bell audio.m4a');
+        audio.play();
+        // console.log("you have compleate  your task");
+        // showresultbox();
+        // // activeque.classList.remove("activequiz");
+
+    }
+}
+
+
+
+
+
+
+
+
+
+  const maxProgress = pages.length;
+  const progressBar = document.getElementById('progress-bar');
+  const progressText = document.getElementById('progress-text');
+  progressText.innerHTML = maxProgress;
+  console.log(maxProgress);
+
+  function increaseProgress() {
+    if (progress < maxProgress) {
+      progress++;
+      updateProgressBar();
+    }
+  }
+
+  function updateProgressBar() {
+    const percentage = (progress / maxProgress) * 100;
+    progressBar.style.width = percentage + '%';
+    progressText.textContent = `${progress}/${maxProgress}`;
+  }
+
+
+
 </script>
+
 </body>
 </html>
